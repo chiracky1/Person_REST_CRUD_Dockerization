@@ -1,0 +1,25 @@
+version: "3"
+services:
+  person-crud-backend:
+    image: personcrud:latest
+    ports:
+      - "8086:8086"
+    networks:
+      - person-network
+    depends_on:
+      - person-mysql-db
+ 
+  person-mysql-db:
+    image: mysql:5.6
+    networks:
+      - person-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=persondb
+      - MYSQL_USER=sa
+      - MYSQL_PASSWORD=password
+    ports:
+      - 3306:3306  
+
+networks:
+  person-network:
