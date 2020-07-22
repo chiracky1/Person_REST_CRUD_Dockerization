@@ -2,6 +2,7 @@ package numeryx.fr.controller;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,10 @@ public class PersonController {
 	
 	@DeleteMapping("/{id}")
 	public ApiResponse<Void> deletePerson(@PathVariable Long id){
+		Person p = service.getPersonById(id);
+		Predicate<Person> isNotNull = person -> person != null;
+		if(!isNotNull.test(p))
+			return new ApiResponse<Void>(HttpStatus.NOT_FOUND.value(), "Person with id: "+id+ " not found", null);
 		service.deletePerson(id);
 		return new ApiResponse<Void>(HttpStatus.OK.value(), "Person delete sucessfully", null);
 	}

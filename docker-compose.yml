@@ -11,15 +11,20 @@ services:
  
   person-mysql-db:
     image: mysql:5.6
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     networks:
       - person-network
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=persondb
-      - MYSQL_USER=sa
-      - MYSQL_PASSWORD=password
+      MYSQL_ROOT_PASSWORD: root
+    volumes: 
+      - ./init:/docker-entrypoint-initdb.d
+      
+  adminer:
+    image: adminer
+    restart: always
     ports:
-      - 3306:3306  
+      - 8080:8080 
 
 networks:
   person-network:

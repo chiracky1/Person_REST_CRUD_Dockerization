@@ -5,7 +5,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Objects;
+
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,7 +33,8 @@ import numeryx.fr.service.PersonService;
 		webEnvironment = WebEnvironment.MOCK, 
 		classes = {PersonRestCrudCiApplication.class, MysqlConfig.class}) //MysqlConfig Config another DataSource for tests purposes
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("integration-test")
+@TestMethodOrder(OrderAnnotation.class)
 public class PersonControllerTest {
 
 	@Autowired
@@ -41,6 +47,7 @@ public class PersonControllerTest {
 	String resultContent = null;
 	
 	@Test
+	@Order(1)
 	public void createPersonTest() throws Exception {
 		//Arrange
 		Person p = new Person("Marco", "Polo", "trader", "000000009", "USA");
@@ -53,9 +60,12 @@ public class PersonControllerTest {
 	}
 	
 	@Test
+	@Order(2)
 	public void deletePersonTest() throws Exception {
 		//Act
-		this.mvc.perform(delete("/persons/1")
+		Person p = service.getByTel("000000009");
+		if(Objects.nonNull(p))
+			this.mvc.perform(delete("/persons/"+p.getIdPerson())
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

@@ -14,7 +14,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Person_REST_CRUD_CI</name>
-	<description>REST API for CRUD Person entity that illustrate CI via Jenkins </description>
+	<description>REST API for CRUD Person entity that illustrate Dockerization and CI via Jenkins </description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -75,5 +75,14 @@
 		</plugins>
 		<finalName>Person_REST_CRUD_CI</finalName>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>integration-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+	</profiles>
 
 </project>
