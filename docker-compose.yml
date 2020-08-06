@@ -1,7 +1,7 @@
 version: "3"
 services:
   person-crud-backend:
-    image: personcrud:latest
+    image: ccyprus/personcrud:latest
     ports:
       - "8086:8086"
     networks:
