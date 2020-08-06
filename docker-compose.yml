@@ -23,6 +23,8 @@ services:
   adminer:
     image: adminer
     restart: always
+    networks:
+      - person-network
     ports:
       - 8080:8080 
 
