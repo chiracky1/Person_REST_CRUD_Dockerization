@@ -13,6 +13,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,7 +30,12 @@ public class PersonServiceImplTuTest {
 	
 	@MockBean
 	private PersonDAO dao;
-	
+
+	@Captor
+	ArgumentCaptor<Long> idCaptor;
+	@Captor
+	ArgumentCaptor<String> telCaptor;
+
 	@TestConfiguration
 	static class PersonServiceConfig{
 		@Bean
@@ -42,15 +49,16 @@ public class PersonServiceImplTuTest {
 	
 	@Test
 	public void getAllPersonsTest() {
-		//Arrange
+
 		List<Person> returnList = Arrays.asList(
 				new Person("Patrice", "Lumumba", "Politician man", "000000001", "RD Congo"),
 				new Person("Thomas", "Sankara", "Politician man", "000000002", "Burkinafaso")
 		);
+
 		when(service.getAllPersons()).thenReturn(returnList);
-		//Act
+
 		List<Person> persons = service.getAllPersons();
-		//Assert
+
 		Person p1 = returnList.get(0);
 		Person p2 = returnList.get(1);
 		assertEquals(2, persons.size());
@@ -59,22 +67,18 @@ public class PersonServiceImplTuTest {
 	}
 	
 	@Test
-	public void getPersonById() {	
-		//Arrange
-		Person person = new Person();
-		person.setIdPerson(4L);
-		person.setFirstName("Lucky");
-		person.setLastName("Dube");
-		person.setProfession("Musician");
-		person.setTel("000000004");
-		person.setAddress("South Africa");
+	public void getPersonById() {
+
+		Person person = Person.builder().idPerson(4L).firstName("Lucky").lastName("Dube").profession("raggaeman")
+				.tel("000000004").address("South Africa").build();
 		
 		when(dao.findById(person.getIdPerson())).thenReturn(Optional.of(person));
 		
-		//Act
 		Person p = service.getPersonById(person.getIdPerson());
-		//Assert
+
 		verify(dao, times(1)).findById(person.getIdPerson());
+		verify(dao).findById(idCaptor.capture());
+		assertEquals(4L, idCaptor.getValue());
 		assertEquals(person.getIdPerson(), p.getIdPerson());
 		assertEquals(person.getFirstName(), p.getFirstName());
 		assertEquals(person.getLastName(), p.getLastName());
@@ -85,21 +89,18 @@ public class PersonServiceImplTuTest {
 	
 	@Test
 	public void getPersonByTelTest() {
-		//Arrange
-		Person person = new Person();
-		person.setIdPerson(2L);
-		person.setFirstName("Lokua");
-		person.setLastName("Kanza");
-		person.setProfession("Musician");
-		person.setTel("000000007");
-		person.setAddress("DR Congo");
+
+		Person person = Person.builder().idPerson(2L).firstName("Lokua").lastName("Kanza").profession("Musician")
+				.tel("000000007").address("DR Congo").build();
 		
 		when(dao.findByTel(person.getTel())).thenReturn(Optional.of(person));
 		
-		//Act
 		Person p = service.getByTel("000000007");
-		//Assert
+
 		assertNotNull(p);
+		verify(dao, times(1)).findByTel("000000007");
+		verify(dao).findByTel(telCaptor.capture());
+		assertEquals("000000007", telCaptor.getValue());
 		assertEquals(person.getIdPerson(), p.getIdPerson());
 		assertEquals(person.getFirstName(), p.getFirstName());
 		assertEquals(person.getLastName(), p.getLastName());
@@ -110,35 +111,26 @@ public class PersonServiceImplTuTest {
 	
 	@Test
 	public void createPersonTest() {
-		//Arrange
-		Person person = new Person();
-		person.setIdPerson(4L);
-		person.setFirstName("Lucky");
-		person.setLastName("Dube");
-		person.setProfession("Musician");
-		person.setTel("000000004");
-		person.setAddress("South Africa");
-		//Act
-		service.createPerson(person);
-		//Assert
+
+		Person person = Person.builder().idPerson(4L).firstName("Lucky").lastName("Dube").profession("raggaeman")
+				.tel("000000004").address("South Africa").build();
+
+		when(dao.save(person)).thenReturn(person);
+
+		Person p = service.createPerson(person);
+
 		verify(dao, times(1)).save(person);
+		assertEquals(p, person);
 	}
 	
 	@Test
 	public void deletePersonTest() {
-		//Arrange
-		Person person = new Person();
-		person.setIdPerson(5L);
-		person.setFirstName("Lucky");
-		person.setLastName("Dube");
-		person.setProfession("Musician");
-		person.setTel("000000004");
-		person.setAddress("South Africa");
-		service.createPerson(person);
+
+		Person person = Person.builder().idPerson(5L).firstName("Lucky").lastName("Dube").profession("raggaeman")
+				.tel("000000004").address("South Africa").build();
 		
-		//Act
 		service.deletePerson(5L);
-		//Assert
+
 		verify(dao, times(1)).deleteById(person.getIdPerson());
 	}
 }

@@ -1,5 +1,10 @@
 package numeryx.fr.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -11,11 +16,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Persons")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Person implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -37,10 +43,6 @@ public class Person implements Serializable {
 	@Column
 	private String address;
 
-	public Person() {
-		super();
-	}
-
 	/**
 	 * @param firstName
 	 * @param lastName
@@ -55,96 +57,6 @@ public class Person implements Serializable {
 		this.profession = profession;
 		this.tel = tel;
 		this.address = address;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public Long getIdPerson() {
-		return idPerson;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setIdPerson(long idPerson) {
-		this.idPerson = idPerson;
-	}
-
-	/**
-	 * @return the firstName
-	 */
-	public String getFirstName() {
-		return firstName;
-	}
-
-	/**
-	 * @param firstName the firstName to set
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
-	 * @return the lastName
-	 */
-	public String getLastName() {
-		return lastName;
-	}
-
-	/**
-	 * @param lastName the lastName to set
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	/**
-	 * @return the profession
-	 */
-	public String getProfession() {
-		return profession;
-	}
-
-	/**
-	 * @param profession the profession to set
-	 */
-	public void setProfession(String profession) {
-		this.profession = profession;
-	}
-
-	/**
-	 * @return the tel
-	 */
-	public String getTel() {
-		return tel;
-	}
-
-	/**
-	 * @param tel the tel to set
-	 */
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
-
-	/**
-	 * @return the address
-	 */
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	@Override
-	public String toString() {
-		return "Person [idPerson=" + idPerson + ", firstName=" + firstName + ", lastName=" + lastName + ", profession=" + profession
-				+ ", tel=" + tel + ", address=" + address + "]";
 	}
 	
 }

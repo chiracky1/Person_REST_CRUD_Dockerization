@@ -63,7 +63,14 @@ public class PersonControllerTuTest {
 	@Test
 	public void getPersonByIdTest() throws Exception {
 		//Arrange
-		Person p = new Person("Che", "Guevara", "Doctor", "000000009", "Argentine");
+		Person p = Person.builder()
+						.firstName("Che")
+						.lastName("Guevara")
+						.profession("Doctor")
+						.tel("000000009")
+						.address("Argentine")
+						.build();
+
 		p.setIdPerson(1L);
 		resultContent = mapper.writeValueAsString(p);
 		when(service.getPersonById(1L)).thenReturn(p);
@@ -79,7 +86,13 @@ public class PersonControllerTuTest {
 	@Test
 	public void getPersonByTelTest() throws Exception {
 		//Arrange
-		Person p = new Person("Che", "Guevara", "Doctor", "000000009", "Argentine");
+		Person p = Person.builder()
+				.firstName("Che")
+				.lastName("Guevara")
+				.profession("Doctor")
+				.tel("000000009")
+				.address("Argentine")
+				.build();
 		p.setIdPerson(1L);
 		resultContent = mapper.writeValueAsString(p);
 		when(service.getByTel("000000009")).thenReturn(p);
@@ -95,7 +108,13 @@ public class PersonControllerTuTest {
 	@Test
 	public void createPersonTest() throws Exception {
 		//Arrange
-		Person p = new Person("Fidel", "Castro", "Lawyer", "000000008", "Cuba");
+		Person p = Person.builder()
+				.firstName("Fidel")
+				.lastName("Castro")
+				.profession("Lawyer")
+				.tel("000000008")
+				.address("Cuba")
+				.build();
 		p.setIdPerson(2L);
 		String person = mapper.writeValueAsString(p);
 		when(service.createPerson(Mockito.any(Person.class))).thenReturn(p);
@@ -111,7 +130,14 @@ public class PersonControllerTuTest {
 	@Test
 	public void updatePersonTest() throws Exception {
 		//Arrange
-		Person p = new Person("Fidel", "Castro", "Lawyer", "000000008", "Cuba");
+		Person p = Person.builder()
+					.firstName("Fidel")
+					.lastName("Castro")
+					.profession("Lawyer")
+					.tel("000000008")
+					.address("Cuba")
+					.build();
+
 		String person = mapper.writeValueAsString(p);
 		when(service.getPersonById(Mockito.any(Long.class))).thenReturn(p);
 		

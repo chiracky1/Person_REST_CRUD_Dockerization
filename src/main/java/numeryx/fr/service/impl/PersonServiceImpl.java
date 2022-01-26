@@ -37,13 +37,6 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Person createPerson(Person p) {
-//		Person person = new Person();
-//		person.setIdPerson(p.getIdPerson());
-//		person.setFirstName(p.getFirstName());
-//		person.setLastName(p.getLastName());
-//		person.setProfession(p.getProfession());
-//		person.setTel(p.getTel());
-//		person.setAddress(p.getAddress());
 		return dao.save(p);
 	}
 
