@@ -10,6 +10,7 @@ public interface PersonService {
 	Person  getPersonById(Long id);
 	Person getByTel(String tel);
 	Person createPerson(Person p);
+	Person updatePerson(Long id, Person p) throws NullPointerException;
 	void deletePerson(Long id);
 
 }

@@ -32,38 +32,43 @@ public class PersonController {
 	
 	@GetMapping
 	public ApiResponse<List<Person>> findAllPerson(){
-		return new ApiResponse<List<Person>>(HttpStatus.OK.value(), "Person list fetched successfully ", service.getAllPersons());
+		return ApiResponse.<List<Person>>builder().status(HttpStatus.OK.value())
+				.message("Person list fetched successfully")
+				.result(service.getAllPersons())
+				.build();
 	}
 	
 	@GetMapping("/{id}")
 	public ApiResponse<Person> getPersonById(@PathVariable Long id){
-		return new ApiResponse<Person>(HttpStatus.OK.value(), "Person fetched sucessfully ", service.getPersonById(id));
+		return ApiResponse.<Person>builder().status(HttpStatus.OK.value())
+				.message("Person fetched successfully")
+				.result(service.getPersonById(id))
+				.build();
 	}
 	
 	@GetMapping("/tel/{tel}")
 	public ApiResponse<Person> getPersonByTel(@PathVariable String tel){
-		return new ApiResponse<Person>(HttpStatus.OK.value(), "Person fetched sucessfully ", service.getByTel(tel));
+		return ApiResponse.<Person>builder().status(HttpStatus.OK.value())
+				.message("Person fetched successfully")
+				.result(service.getByTel(tel))
+				.build();
 	}
 	
 	@PostMapping
 	public ApiResponse<Person> createPerson(@RequestBody Person p){
 		Preconditions.checkNotNull(p);
-		return new ApiResponse<Person>(HttpStatus.OK.value(), "Person saved successfully ", service.createPerson(p));
+		return ApiResponse.<Person>builder().status(HttpStatus.OK.value())
+				.message("Person saved successfully")
+				.result(service.createPerson(p))
+				.build();
 	}
 	
 	@PutMapping("/{id}")
-	public ApiResponse<Person> updatePerson(@PathVariable("id") Long id,@RequestBody Person p){
+	public ApiResponse<Person> updatePerson(@PathVariable("id") Long id,@RequestBody Person p) throws NullPointerException {
 		Preconditions.checkNotNull(p);
 		Preconditions.checkNotNull(id);
-		Person person = service.getPersonById(id);
-		if(Objects.isNull(person)) {
-			return new ApiResponse<Person>(HttpStatus.NOT_FOUND.value(), "Person with id: "+id+ " not found", null);
-		}	
-		p.setIdPerson(id);
-		return new ApiResponse<Person>(
-				HttpStatus.OK.value(), 
-				"Person updated successfully", 
-				service.createPerson(p));
+		return ApiResponse.<Person>builder().status(HttpStatus.OK.value()).message("Person updated successfully")
+				.result(service.updatePerson(id, p)).build();
 	}
 	
 	@DeleteMapping("/{id}")
@@ -73,7 +78,8 @@ public class PersonController {
 		if(!isNotNull.test(p))
 			return new ApiResponse<Void>(HttpStatus.NOT_FOUND.value(), "Person with id: "+id+ " not found", null);
 		service.deletePerson(id);
-		return new ApiResponse<Void>(HttpStatus.OK.value(), "Person delete sucessfully", null);
+		return ApiResponse.<Void>builder().status(HttpStatus.OK.value()).message("Person deleted successfully")
+				.result(null).build();
 	}
 
 }

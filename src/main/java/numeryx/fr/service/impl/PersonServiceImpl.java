@@ -2,6 +2,7 @@ package numeryx.fr.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,16 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Person createPerson(Person p) {
+		return dao.save(p);
+	}
+
+	@Override
+	public Person updatePerson(Long id, Person p) throws NullPointerException {
+		Person person = getPersonById(id);
+		if(Objects.isNull(person)){
+			throw new NullPointerException("Person with id: " + id + " not found");
+		}
+		p.setIdPerson(person.getIdPerson());
 		return dao.save(p);
 	}
 

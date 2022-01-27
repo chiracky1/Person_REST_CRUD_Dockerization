@@ -1,6 +1,7 @@
 package numeryx.fr.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,7 +44,7 @@ public class PersonControllerTuTest {
 	
 	@Test
 	public void findAllPersonTest() throws Exception {
-		//Arrange
+
 		List<Person> persons = Arrays.asList(
 				new Person("Che", "Guevara", "Doctor", "000000009", "Argentine"),
 				new Person("Fidel", "Castro", "Lawyer", "000000008", "Cuba"));
@@ -52,7 +53,6 @@ public class PersonControllerTuTest {
 		System.out.println(resultContent);
 		when(service.getAllPersons()).thenReturn(persons);
 		
-		//Act
 		mvc.perform(get("/persons")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -62,7 +62,7 @@ public class PersonControllerTuTest {
 	
 	@Test
 	public void getPersonByIdTest() throws Exception {
-		//Arrange
+
 		Person p = Person.builder()
 						.firstName("Che")
 						.lastName("Guevara")
@@ -73,9 +73,8 @@ public class PersonControllerTuTest {
 
 		p.setIdPerson(1L);
 		resultContent = mapper.writeValueAsString(p);
-		when(service.getPersonById(1L)).thenReturn(p);
+		when(service.getPersonById(any(Long.class))).thenReturn(p);
 		
-		//Act
 		this.mvc.perform(get("/persons/1")
 					.contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
@@ -85,7 +84,7 @@ public class PersonControllerTuTest {
 	
 	@Test
 	public void getPersonByTelTest() throws Exception {
-		//Arrange
+
 		Person p = Person.builder()
 				.firstName("Che")
 				.lastName("Guevara")
@@ -95,9 +94,8 @@ public class PersonControllerTuTest {
 				.build();
 		p.setIdPerson(1L);
 		resultContent = mapper.writeValueAsString(p);
-		when(service.getByTel("000000009")).thenReturn(p);
-		
-		//Act
+		when(service.getByTel(any(String.class))).thenReturn(p);
+
 		this.mvc.perform(get("/persons/tel/000000009")
 					.contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
@@ -107,7 +105,7 @@ public class PersonControllerTuTest {
 	
 	@Test
 	public void createPersonTest() throws Exception {
-		//Arrange
+
 		Person p = Person.builder()
 				.firstName("Fidel")
 				.lastName("Castro")
@@ -119,7 +117,6 @@ public class PersonControllerTuTest {
 		String person = mapper.writeValueAsString(p);
 		when(service.createPerson(Mockito.any(Person.class))).thenReturn(p);
 		
-		//Act
 		this.mvc.perform(post("/persons")
 					.content(person)
 					.contentType(MediaType.APPLICATION_JSON))
@@ -129,7 +126,7 @@ public class PersonControllerTuTest {
 	
 	@Test
 	public void updatePersonTest() throws Exception {
-		//Arrange
+
 		Person p = Person.builder()
 					.firstName("Fidel")
 					.lastName("Castro")
@@ -140,8 +137,10 @@ public class PersonControllerTuTest {
 
 		String person = mapper.writeValueAsString(p);
 		when(service.getPersonById(Mockito.any(Long.class))).thenReturn(p);
+		when(service.updatePerson(any(Long.class), any(Person.class)))
+				.thenReturn(Person.builder().idPerson(2L).firstName("Fidel").lastName("Castro")
+				.profession("Lawyer").tel("000000008").address("Cuba").build());
 		
-		//Act
 		this.mvc.perform(put("/persons/2")
 					.content(person)
 					.contentType(MediaType.APPLICATION_JSON))
@@ -151,7 +150,7 @@ public class PersonControllerTuTest {
 	
 	@Test
 	public void deletePersonTest() throws Exception {
-		//Act
+
 		this.mvc.perform(delete("/persons/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))

@@ -49,7 +49,7 @@ public class PersonControllerTest {
 	@Test
 	@Order(1)
 	public void createPersonTest() throws Exception {
-		//Arrange
+
 		Person p = new Person("Marco", "Polo", "trader", "000000009", "USA");
 		String person = mapper.writeValueAsString(p);
 		this.mvc.perform(post("/persons")
@@ -62,7 +62,7 @@ public class PersonControllerTest {
 	@Test
 	@Order(2)
 	public void deletePersonTest() throws Exception {
-		//Act
+
 		Person p = service.getByTel("000000009");
 		if(Objects.nonNull(p))
 			this.mvc.perform(delete("/persons/"+p.getIdPerson())

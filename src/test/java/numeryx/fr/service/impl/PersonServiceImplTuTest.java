@@ -1,8 +1,8 @@
 package numeryx.fr.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -121,6 +121,38 @@ public class PersonServiceImplTuTest {
 
 		verify(dao, times(1)).save(person);
 		assertEquals(p, person);
+	}
+
+	@Test
+	public void updatePersonTest() throws NullPointerException {
+
+		Person personSaved = Person.builder().idPerson(3L).firstName("Thomas").lastName("Sankara").profession("Politician").tel("123456789")
+				.address("Burkinafaso").build();
+
+		when(dao.findById(any(Long.class))).thenReturn(Optional.ofNullable(personSaved));
+
+		Person personToUpdate = Person.builder().profession("National hero").build();
+
+		Person.PersonBuilder personBuilder = personSaved.toBuilder();
+		Person personUpdated = personBuilder.profession("National hero").build();
+		when(dao.save(any(Person.class))).thenReturn(personUpdated);
+
+		Person person = service.updatePerson(3L, personToUpdate);
+
+		assertEquals(personUpdated, person);
+	}
+
+	@Test
+	public void updatePersonShouldThrowExceptionTest(){
+		NullPointerException npe = assertThrows(NullPointerException.class, () -> {
+			service.updatePerson(2L,
+					Person.builder().firstName("Chirac").lastName("Mundadi").build());
+		});
+
+		String exceptionExpectedMessage = "Person with id: 2 not found";
+		String actualMessage = npe.getMessage();
+
+		assertTrue(actualMessage.contains(exceptionExpectedMessage));
 	}
 	
 	@Test
