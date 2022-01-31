@@ -17,7 +17,7 @@ services:
       - person-network
     environment:
       MYSQL_ROOT_PASSWORD: root
-    volumes: 
+    volumes:
       - ./init:/docker-entrypoint-initdb.d
       
   adminer:

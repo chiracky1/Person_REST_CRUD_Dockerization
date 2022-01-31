@@ -10,14 +10,19 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>numeryx.fr</groupId>
-	<artifactId>Person_REST_CRUD_CI</artifactId>
+	<artifactId>Person_REST_CRUD_Dockerization</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Person_REST_CRUD_CI</name>
-	<description>REST API for CRUD Person entity that illustrate Dockerization and CI via Jenkins </description>
+	<name>Person_REST_CRUD_Dockerization</name>
+	<description>REST API for CRUD Person entity that illustrate Dockerization </description>
 
 	<properties>
 		<java.version>1.8</java.version>
+		<skip.unit.tests>false</skip.unit.tests>
+		<skip.integration.tests>false</skip.integration.tests>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
 	</properties>
 
 	<dependencies>
@@ -74,24 +79,97 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- add additional source and resource directories for integration test -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-integration-test-sources</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/integration-test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-integration-test-resources</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>add-test-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<filtering>true</filtering>
+									<directory>src/integration-test/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- The Maven Surefire Plugin doesn’t run unit tests when the value of
+                its skipTests configuration option is true -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>${skip.unit.tests}</skipTests>
+					<excludedGroups>integration</excludedGroups>
+				</configuration>
+			</plugin>
+			<!-- To run just integration tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*IntegrationTest.java</include>
+							</includes>
+							<groups>integration</groups>
+							<skipTests>${skip.integration.tests}</skipTests>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
-		<finalName>Person_REST_CRUD_CI</finalName>
+		<finalName>Person_REST_CRUD_Dockerization</finalName>
 	</build>
-	
+
 	<profiles>
 		<profile>
-			<id>integration-test</id>
+			<id>dev</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
+		<profile>
+			<id>integration-test</id>
+			<properties>
+				<skip.integration.tests>false</skip.integration.tests>
+				<skip.unit.tests>true</skip.unit.tests>
+			</properties>
+		</profile>
 	</profiles>
+
 
 </project>
